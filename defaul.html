@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carta para Mamá</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(#ffe5ec, #ffc2d1);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    .carta-contenedor {
+      perspective: 1000px;
+      position: relative;
+    }
+
+    .carta {
+      width: 320px;
+      height: 220px;
+      background: #fff;
+      border: 2px solid #d6336c;
+      border-radius: 10px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+      cursor: pointer;
+    }
+
+    .carta.abierta {
+      transform: rotateY(180deg);
+    }
+
+    .cara {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .frente {
+      background: #f8edeb;
+      text-align: center;
+      font-size: 18px;
+      color: #6a1b4d;
+    }
+
+    .detras {
+      background: #fff0f5;
+      transform: rotateY(180deg);
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mensaje-texto {
+      color: #d6336c;
+      font-size: 16px;
+      line-height: 1.4;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      resize: none;
+      outline: none;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .corazon {
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: rotate(45deg);
+      animation: flotar 5s ease-in infinite;
+      opacity: 0;
+      z-index: 0;
+    }
+
+    .corazon::before,
+    .corazon::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .corazon::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .corazon::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes flotar {
+      0% {
+        transform: translate(0, 0) rotate(45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-100px, -600px) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    .botones {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .botones button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #d6336c;
+      color: white;
+      cursor: pointer;
+    }
+
+    .botones button:hover {
+      background: #a61e4d;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="carta-contenedor">
+    <div class="carta" id="carta">
+      <div class="cara frente">
+        💌 Haz clic para abrir tu carta 💌
+      </div>
+      <div class="cara detras">
+        <textarea class="mensaje-texto" id="mensaje">
+Querida Mamá,
+
+Gracias por todo tu amor, tu fuerza y tus abrazos mágicos.
+Eres el corazón de nuestro hogar y la razón de mis sonrisas.
+
+¡Feliz Día de las Madres! ❤️
+
+Con todo mi amor,
+Tu [hijo/hija].
+        </textarea>
+      </div>
+    </div>
+
+    <div class="botones">
+      <button onclick="imprimirCarta()">🖨️ Imprimir</button>
+      <button onclick="reiniciarCarta()">🔄 Reiniciar</button>
+    </div>
+  </div>
+
+  <audio id="musica" autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mp3">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
+  <script>
+    const carta = document.getElementById('carta');
+    const musica = document.getElementById('musica');
+
+    carta.addEventListener('click', () => {
+      carta.classList.toggle('abierta');
+      lanzarCorazones();
+      musica.play();
+    });
+
+    function lanzarCorazones() {
+      for (let i = 0; i < 25; i++) {
+        const corazon = document.createElement('div');
+        corazon.className = 'corazon';
+        corazon.style.left = `${Math.random() * 100}vw`;
+        corazon.style.top = `${Math.random() * 100 + 50}vh`;
+        corazon.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        document.body.appendChild(corazon);
+        setTimeout(() => corazon.remove(), 5000);
+      }
+    }
+
+    function imprimirCarta() {
+      const mensaje = document.getElementById('mensaje').value;
+      const ventana = window.open('', '_blank');
+      ventana.document.write(`
+        <html>
+        <head><title>Carta para Mamá</title></head>
+        <body style="font-family: Arial; padding: 40px; color: #d6336c;">
+          <h2>Carta para Mamá 💐</h2>
+          <pre style="font-size: 16px;">${mensaje}</pre>
+          <br><br>
+          <button onclick="window.print()">Imprimir</button>
+        </body>
+        </html>
+      `);
+      ventana.document.close();
+    }
+
+    function reiniciarCarta() {
+      document.getElementById('mensaje').value = `
+      `;
+      carta.classList.remove('abierta');
+    }
+  </script>
+</body>
+</html>
+<div class="cara detras">
+  <textarea class="mensaje-texto" id="mensaje">¡
+    </textarea>
+  <img src="https://drive.google.com/file/d/1AXpkJtMJ9atmizu7GtH2kuyAIk6970e6/view?usp=sharing" alt="Foto con mamá" style="width: 100%; border-radius: 10px; margin-top: 10px;">
+</div>
+
+
+🌹 "Eres mi Todo, Mamá"
+
+Mamá, palabra sagrada,
+susurro suave del alma,
+la raíz que me sostiene
+cuando el mundo me desarma.
+
+Tu voz es canto de abrigo
+en las noches más inciertas,
+y tu abrazo, el paraíso
+donde todas mis penas se sueltan.
+
+Fuiste la luz en mi infancia,
+mi refugio y mi rincón,
+quien con besos sanó heridas
+y con cuentos dio ilusión.
+
+Tus manos, mapa de esfuerzo,
+de batallas invisibles,
+cosieron con hilo tierno
+mis días más imposibles.
+
+No hay reloj que marque el tiempo
+de todo lo que me diste,
+ni universo que contenga
+el amor que tú me abriste.
+
+Fuiste maestra sin aulas,
+psicóloga sin diplomas,
+y artista de cada día
+pintando paz entre sombras.
+
+Tus lágrimas fueron perlas
+que el viento nunca secó,
+porque incluso en el silencio
+tu corazón habló.
+
+Cuando el mundo me golpeaba,
+tú eras escudo y canción,
+y cuando dudé de todo,
+tú fuiste mi dirección.
+
+Mamá, flor que no se marchita,
+faro eterno del hogar,
+hoy te escribo este poema
+para nunca olvidar:
+
+Que en tus pasos va mi historia,
+en tu risa va mi fe,
+y si alguna vez renazco,
+te volvería a escoger.
+
+Gracias por cada segundo,
+por tu entrega sin final,
+por amar sin condiciones
+y enseñarme a perdonar.
+
+Eres mi raíz y cielo,
+mi ternura y mi motor,
+te celebro cada día
+con todo mi corazón.
+
+ATT: Oswaldo Ezequiel 
